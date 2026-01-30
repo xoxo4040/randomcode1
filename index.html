@@ -50,14 +50,31 @@
             }, []);
 
             const generatePasswords = () => {
-                const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+                const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                const lower = "abcdefghijklmnopqrstuvwxyz";
+                const numbers = "0123456789";
+                const allChars = upper + lower + numbers;
                 const length = 12;
+
                 const newPasswords = Array.from({ length: 5 }, () => {
-                    let pwd = "";
-                    for (let i = 0; i < length; i++) {
-                        pwd += chars.charAt(Math.floor(Math.random() * chars.length));
+                    let pwd = [];
+                    // Ensure at least one of each
+                    pwd.push(upper[Math.floor(Math.random() * upper.length)]);
+                    pwd.push(lower[Math.floor(Math.random() * lower.length)]);
+                    pwd.push(numbers[Math.floor(Math.random() * numbers.length)]);
+
+                    // Fill the rest
+                    for (let i = 3; i < length; i++) {
+                        pwd.push(allChars[Math.floor(Math.random() * allChars.length)]);
                     }
-                    return pwd;
+
+                    // Shuffle the array to avoid predictable positions (Fisher-Yates)
+                    for (let i = pwd.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [pwd[i], pwd[j]] = [pwd[j], pwd[i]];
+                    }
+
+                    return pwd.join("");
                 });
                 setPasswords(newPasswords);
                 return newPasswords; // 생성된 비밀번호 배열 반환
@@ -119,7 +136,7 @@
                                 onClick={generatePasswords}
                                 className="text-sm font-medium text-gray-400 hover:text-indigo-500 transition-colors"
                             >
-                                맘에안들어 새로고침
+                                비밀번호 새로고침
                             </button>
                         </div>
                     </div>
@@ -133,4 +150,3 @@
 </body>
 
 </html>
-
