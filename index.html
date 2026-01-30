@@ -40,6 +40,14 @@
             const [passwords, setPasswords] = useState([]);
             const [copiedIndex, setCopiedIndex] = useState(null);
 
+            useEffect(() => {
+                const newPasswords = generatePasswords();
+                // 페이지 접속 시 첫 번째 난수를 자동으로 클립보드에 복사
+                if (newPasswords && newPasswords.length > 0) {
+                    copyToClipboard(newPasswords[0], 0);
+                }
+            }, []);
+
             const generatePasswords = () => {
                 const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
                 const length = 12;
@@ -51,16 +59,15 @@
                     return pwd;
                 });
                 setPasswords(newPasswords);
+                return newPasswords; // 생성된 비밀번호 배열 반환
             };
-
-            useEffect(() => {
-                generatePasswords();
-            }, []);
 
             const copyToClipboard = (text, index) => {
                 navigator.clipboard.writeText(text).then(() => {
                     setCopiedIndex(index);
                     setTimeout(() => setCopiedIndex(null), 2000);
+                }).catch(err => {
+                    console.error('클립보드 복사 실패:', err);
                 });
             };
 
